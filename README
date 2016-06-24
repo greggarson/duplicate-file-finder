@@ -1,0 +1,47 @@
+Python Version Required: 3.4+
+
+Python Script for locating and returning files within a given directory tree
+that match at a binary data level.
+
+Currently the algorithm is written to make use of file sizes and hashes to
+determine if there is a match betweem files.  The reason for this choice is
+mainly one of speed and the fact that the hashes generated offer a simple
+common identifier by which the duplicates can be groups.
+
+The algorithm as written is not fool proof as hash collisions are still
+possible, this is the reason for the addition of the file sizes into the
+identifying key.  This helps to mitigate the possibility of collisions but
+does not completely handle it.
+
+A further step that could be taken is, in the case of a collision on hash and
+file size, actual contents of the colliding files can be examined.
+
+Code along the lines of:
+
+    def _compare_actual_contents(self, other):
+        try:
+            with open(self._file_path, 'rb') as this_file, \
+                 open(other.file_path, 'rb') as other_file:
+                for lines in zip(this_file, other_file):
+                    if lines[0] != lines[1]:
+                        return False
+            return True
+        except (AttributeError, TypeError, IOError):
+            return False
+
+could be used to achieve this.
+
+Usages: 
+
+Command Line: 
+    duplicate_finder <root_dir>
+
+Python Lib:
+    import duplicate_finder
+
+    root_dir = "apath"
+    duplicate_finder.finder.find_duplicates(root_dir)
+
+Python Script:
+    python duplicate_finder/finder.py <root_dir>
+
