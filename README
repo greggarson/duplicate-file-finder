@@ -22,7 +22,7 @@ Code along the lines of:
         try:
             with open(self._file_path, 'rb') as this_file, \
                  open(other.file_path, 'rb') as other_file:
-                for lines in zip(this_file, other_file):
+                for lines in itertools.zip_longest(this_file, other_file):
                     if lines[0] != lines[1]:
                         return False
             return True
